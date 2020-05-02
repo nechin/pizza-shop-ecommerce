@@ -27,4 +27,12 @@ class Pizza extends Model
     {
         return $this->belongsToMany('App\Ingredient', 'ingredient');
     }
+
+    /**
+     * Get the orders for the pizza
+     */
+    public function orders()
+    {
+        return $this->belongsToMany('App\Order', 'order');
+    }
 }

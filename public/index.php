@@ -9,8 +9,6 @@
 
 define('LARAVEL_START', microtime(true));
 
-file_put_contents("c://log.log", "\n LARAVEL_START \n", FILE_APPEND);
-
 /*
 |--------------------------------------------------------------------------
 | Register The Auto Loader

@@ -36,4 +36,12 @@ class Order extends Model
     {
         return $this->hasOne('App\Users');
     }
+
+    /**
+     * Get the user pizzas for the order
+     */
+    public function pizzas()
+    {
+        return $this->belongsToMany('App\Pizza', 'pizza');
+    }
 }
