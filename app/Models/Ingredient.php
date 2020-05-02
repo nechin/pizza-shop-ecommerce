@@ -25,6 +25,6 @@ class Ingredient extends Model
      */
     public function pizzas()
     {
-        return $this->belongsToMany('App\Pizza', 'pizza');
+        return $this->belongsToMany('App\Models\Pizza', 'pizza');
     }
 }

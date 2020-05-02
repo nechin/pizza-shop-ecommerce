@@ -4,6 +4,14 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
+import App from './components/App'
+import Pizza from "./components/Pizza"
+import Bonus from "./components/Bonus"
+import About from "./components/About"
+import Cart from "./components/Cart"
+import Home from "./components/Home"
+import VueRouter from 'vue-router'
+
 require('./bootstrap');
 
 window.Vue = require('vue');
@@ -19,7 +27,7 @@ window.Vue = require('vue');
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('example-component', require('./components/ExampleComponent.vue').default);
+//Vue.component('app-component', require('./components/App.vue').default);
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -27,6 +35,41 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
+Vue.use(VueRouter);
+
+const router = new VueRouter({
+    mode: 'history',
+    routes: [
+        {
+            path: '/',
+            name: 'home',
+            component: Home
+        },
+        {
+            path: '/pizza',
+            name: 'pizza',
+            component: Pizza,
+        },
+        {
+            path: '/bonus',
+            name: 'bonus',
+            component: Bonus,
+        },
+        {
+            path: '/about',
+            name: 'about',
+            component: About,
+        },
+        {
+            path: '/cart',
+            name: 'cart',
+            component: Cart,
+        },
+    ],
+});
+
 const app = new Vue({
     el: '#app',
+    components: { App },
+    router
 });

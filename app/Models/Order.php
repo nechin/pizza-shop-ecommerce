@@ -34,7 +34,7 @@ class Order extends Model
      */
     public function user()
     {
-        return $this->hasOne('App\Users');
+        return $this->hasOne('App\User');
     }
 
     /**
@@ -42,6 +42,6 @@ class Order extends Model
      */
     public function pizzas()
     {
-        return $this->belongsToMany('App\Pizza', 'pizza');
+        return $this->belongsToMany('App\Models\Pizza', 'pizza');
     }
 }

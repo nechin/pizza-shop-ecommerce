@@ -25,7 +25,7 @@ class Pizza extends Model
      */
     public function ingredients()
     {
-        return $this->belongsToMany('App\Ingredient', 'ingredient');
+        return $this->belongsToMany('App\Models\Ingredient', 'ingredient');
     }
 
     /**
@@ -33,6 +33,6 @@ class Pizza extends Model
      */
     public function orders()
     {
-        return $this->belongsToMany('App\Order', 'order');
+        return $this->belongsToMany('App\Models\Order', 'order');
     }
 }

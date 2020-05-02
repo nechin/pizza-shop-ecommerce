@@ -1,6 +1,8 @@
 /node_modules
 /public/hot
 /public/storage
+/public/js
+/public/css
 /storage/*.key
 /vendor
 /.idea
@@ -14,3 +16,5 @@ npm-debug.log
 yarn-error.log
 composer.phar
 .phpstorm.meta.php
+_ide_helper.php
+_ide_helper_models.php
