@@ -11,6 +11,8 @@ class Order extends Model
 
     public $timestamps = true;
 
+    public $table = 'order';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -38,10 +40,10 @@ class Order extends Model
     }
 
     /**
-     * Get the user pizzas for the order
+     * Get the user pizzas from the order
      */
     public function pizzas()
     {
-        return $this->belongsToMany('App\Models\Pizza', 'pizza');
+        return $this->belongsToMany('App\Models\Pizza', 'order_pizzas');
     }
 }

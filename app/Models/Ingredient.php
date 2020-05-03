@@ -11,6 +11,8 @@ class Ingredient extends Model
 
     public $timestamps = true;
 
+    public $table = 'ingredient';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -21,10 +23,10 @@ class Ingredient extends Model
     ];
 
     /**
-     * Get the pizzas for the ingredient
+     * Get the pizzas with the ingredient
      */
     public function pizzas()
     {
-        return $this->belongsToMany('App\Models\Pizza', 'pizza');
+        return $this->belongsToMany('App\Models\Pizza', 'pizza_ingredients');
     }
 }

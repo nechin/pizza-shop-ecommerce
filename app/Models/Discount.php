@@ -11,6 +11,8 @@ class Discount extends Model
 
     public $timestamps = true;
 
+    public $table = 'discount';
+
     /**
      * The attributes that are mass assignable.
      *

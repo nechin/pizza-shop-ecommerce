@@ -43,4 +43,12 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\Order');
     }
+
+    /**
+     * Get the favorite pizzas for the user
+     */
+    public function favorite_pizzas()
+    {
+        return $this->belongsToMany('App\Models\Pizza', 'favorite_pizzas');
+    }
 }

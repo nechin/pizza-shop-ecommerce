@@ -26,12 +26,13 @@ class AddPizzaTables extends Migration
 
         Schema::create('ingredient', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 255);
+            $table->string('name', 255)->unique();
             $table->timestamps();
             $table->softDeletes();
         });
 
         Schema::create('pizza_ingredients', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('pizza_id');
             $table->unsignedBigInteger('ingredient_id');
 

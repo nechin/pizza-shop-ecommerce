@@ -11,13 +11,15 @@ class Pizza extends Model
 
     public $timestamps = true;
 
+    public $table = 'pizza';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'image', 'size', 'weight', 'price'
+        'name', 'image', 'size', 'weight', 'price', 'vegan'
     ];
 
     /**
@@ -25,7 +27,7 @@ class Pizza extends Model
      */
     public function ingredients()
     {
-        return $this->belongsToMany('App\Models\Ingredient', 'ingredient');
+        return $this->belongsToMany('App\Models\Ingredient', 'pizza_ingredients')->select('name');
     }
 
     /**
@@ -33,6 +35,14 @@ class Pizza extends Model
      */
     public function orders()
     {
-        return $this->belongsToMany('App\Models\Order', 'order');
+        return $this->belongsToMany('App\Models\Order', 'order_pizzas');
+    }
+
+    /**
+     * Get the favorite users for the pizza
+     */
+    public function favorite_users()
+    {
+        return $this->belongsToMany('App\User', 'favorite_pizzas');
     }
 }

@@ -26,6 +26,7 @@ class AddOrderTables extends Migration
         });
 
         Schema::create('order_pizzas', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('pizza_id');
 
