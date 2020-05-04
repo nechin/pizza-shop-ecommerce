@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class Pizza extends Model
 {
@@ -20,6 +22,15 @@ class Pizza extends Model
      */
     protected $fillable = [
         'name', 'image', 'size', 'weight', 'price', 'vegan'
+    ];
+
+    /**
+     * The attributes that should be hidden.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'viewed'
     ];
 
     /**
@@ -44,5 +55,18 @@ class Pizza extends Model
     public function favorite_users()
     {
         return $this->belongsToMany('App\User', 'favorite_pizzas');
+    }
+
+    public function getLikeAttribute()
+    {
+        if (Auth::check()) {
+            $user_id = Auth::user()->id;
+            return DB::table('favorite_pizzas')
+                ->where('pizza_id', $this->id)
+                ->where('user_id', $user_id)
+                ->exists() ? 1 : 0;
+        }
+
+        return 0;
     }
 }

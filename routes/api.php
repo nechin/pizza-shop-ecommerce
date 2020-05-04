@@ -18,8 +18,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('api')->group(function () {
-    Route::get('bonuses', 'DiscountController@getAvailable');
+Route::get('bonuses', 'DiscountController@getAvailable');
+
+Route::middleware('token')->group(function () {
     Route::get('pizzas', 'PizzaController@getAvailable');
-    Route::get('is_auth', 'UserController@isAuth');
+    Route::get('pizza/{id}', 'PizzaController@getOne');
 });

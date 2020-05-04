@@ -10,8 +10,10 @@ import Bonus from "./components/Sections/Bonus"
 import About from "./components/Sections/About"
 import Cart from "./components/Sections/Cart"
 import Home from "./components/Sections/Home"
+import PizzaCard from "./components/Sections/PizzaCard";
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
+import axios from 'axios';
 
 require('./bootstrap');
 
@@ -67,25 +69,41 @@ const router = new VueRouter({
             name: 'cart',
             component: Cart,
         },
+        {
+            path: '/pizza/:id',
+            name: 'PizzaCard',
+            component: PizzaCard,
+            props: true
+        }
     ],
 });
 
 const store = new Vuex.Store({
     state: {
-        cart: {},
-        user_id: false
+        cart: {
+            items: []
+        },
+        user_token: ''
     }
 });
 
 const app = new Vue({
     el: '#app',
     components: { App },
-    mounted() {
-        this.$nextTick(function () {
-            this.$store.state.user_id = this.$refs.user_is_auth !== undefined
-                ? document.getElementById('user_is_auth').value
-                : false;
-        })
+    created() {
+        this.setToken()
+    },
+    methods: {
+        setToken() {
+            this.$nextTick(function () {
+                this.$store.state.user_token = this.$refs.user_token !== undefined
+                    ? document.getElementById('user_token').value
+                    : false;
+                if (this.$store.state.user_token) {
+                    axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.$store.state.user_token;
+                }
+            })
+        }
     },
     router,
     store

@@ -1,33 +1,32 @@
 <template>
     <div class="container">
         <div class="row justify-content-between pt-2">
-            <div class="col-10">
-                <ul class="nav container-nav">
-                    <li class="nav-item pr-1">
-                        <router-link :to="{ name: 'home' }" active-class="active" class="nav-link text-dark" exact>
-                            Home
-                        </router-link>
-                    </li>
-                    <li class="nav-item pr-1">
-                        <router-link :to="{ name: 'pizza' }" active-class="active" class="nav-link text-dark">
-                            Pizza
-                        </router-link>
-                    </li>
-                    <li class="nav-item pr-1">
-                        <router-link :to="{ name: 'bonus' }" active-class="active" class="nav-link text-dark">
-                            Bonus
-                        </router-link>
-                    </li>
-                    <li class="nav-item pr-1">
-                        <router-link :to="{ name: 'about' }" active-class="active" class="nav-link text-dark">
-                            About
-                        </router-link>
-                    </li>
-                </ul>
+            <div class="col-8">
+                <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                        <div class="navbar-nav">
+                            <router-link :to="{ name: 'home' }" active-class="active" class="nav-item nav-link text-dark pr-3" exact>
+                                Home
+                            </router-link>
+                            <router-link :to="{ name: 'pizza' }" active-class="active" class="nav-item nav-link text-dark pr-3">
+                                Pizza
+                            </router-link>
+                            <router-link :to="{ name: 'bonus' }" active-class="active" class="nav-item nav-link text-dark pr-3">
+                                Bonus
+                            </router-link>
+                            <router-link :to="{ name: 'about' }" active-class="active" class="nav-item nav-link text-dark">
+                                About
+                            </router-link>
+                        </div>
+                    </div>
+                </nav>
             </div>
-            <div class="col-2 text-right">
+            <div class="col-4 text-right">
                 <router-link :to="{ name: 'cart' }" class="btn btn-success font-weight-bold">
-                    Cart
+                    Cart ({{cartItems}})
                 </router-link>
             </div>
         </div>
@@ -40,15 +39,20 @@
 
 <script>
     export default {
-        name: "App"
+        name: "App",
+        computed: {
+            cartItems: function () {
+                return this.$store.state.cart.items.length || 0;
+            }
+        }
     }
 </script>
 
 <style scoped>
-    .container-nav a {
+    .navbar-nav a {
         font-size: 1rem;
     }
-    .container-nav a.active {
+    .navbar-nav a.active {
         font-weight: bold;
     }
 </style>

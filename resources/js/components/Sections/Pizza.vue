@@ -22,15 +22,8 @@
         </div>
 
         <div class="row">
-            <div v-for="{ name, image, size, weight, price, ingredients } in pizzas" class="col-sm-6 col-md-6 col-lg-4 mt-4">
-                <pizza-component
-                    :name="name"
-                    :image="image"
-                    :size="size"
-                    :weight="weight"
-                    :price="price"
-                    :ingredients="ingredients"
-                ></pizza-component>
+            <div v-for="pizza in pizzas" class="col-sm-6 col-md-6 col-lg-4 mt-4">
+                <pizza-component :pizza="pizza"></pizza-component>
             </div>
         </div>
     </div>
@@ -38,9 +31,11 @@
 
 <script>
     import axios from 'axios';
+    import global from "../../global";
 
     export default {
         name: "Pizza",
+        mixins: [global],
         data() {
             return {
                 loading: false,
@@ -57,16 +52,19 @@
                 this.error = this.pizzas = null;
                 this.loading = true;
                 this.empty = false;
-                axios
-                    .get('/api/pizzas')
-                    .then(response => {
-                        this.loading = false;
-                        this.pizzas = response.data.data;
-                        this.empty = !this.pizzas.length;
-                    }).catch(error => {
-                        this.loading = false;
-                        this.error = error.response.data.message || error.message;
-                    });
+                this.$nextTick(function () {
+                    this.setAuthHeader();
+                    axios
+                        .get('/api/pizzas')
+                        .then(response => {
+                            this.loading = false;
+                            this.pizzas = response.data.data;
+                            this.empty = !this.pizzas.length;
+                        }).catch(error => {
+                            this.loading = false;
+                            this.error = error.response.data.message || error.message;
+                        });
+                });
             }
         }
     }
