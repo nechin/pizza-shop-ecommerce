@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use DB;
+use App\Http\Service\LikeService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
@@ -60,13 +60,21 @@ class Pizza extends Model
     public function getLikeAttribute()
     {
         if (Auth::check()) {
-            $user_id = Auth::user()->id;
-            return DB::table('favorite_pizzas')
-                ->where('pizza_id', $this->id)
-                ->where('user_id', $user_id)
-                ->exists() ? 1 : 0;
+            $userId = Auth::user()->id;
+            return LikeService::isLiked($this->id, $userId);
         }
 
-        return 0;
+        return false;
+    }
+
+    /**
+     * Scope a query to only include active users.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeVegans($query)
+    {
+        return $query->where('vegan', 1);
     }
 }

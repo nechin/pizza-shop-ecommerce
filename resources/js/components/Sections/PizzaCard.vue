@@ -23,10 +23,10 @@
                     <div class="container pb-3">
                         <div class="row">
                             <div class="col-6" style="font-size: 18px">
-                                <a v-if="isAuth" v-on:click="like()" href="#" :class="likeClass()" style="font-size: 10px">Like</a>
+                                <like-component :pizzaId="pizza.id" :pizzaLike="pizza.like"></like-component>
                             </div>
                             <div class="col-6 text-right">
-                                <a v-on:click="addToCart(pizza)" href="#" class="btn btn-primary">Add to cart</a>
+                                <a v-on:click="addToCart(pizza)" href="javascript:void(0)" class="btn btn-primary">Add to cart</a>
                             </div>
                         </div>
                     </div>
@@ -41,8 +41,7 @@
 </template>
 
 <script>
-    import axios from 'axios';
-    import global from "../../global";
+    import global from "../../global"
 
     export default {
         name: "PizzaCard",
@@ -56,6 +55,7 @@
         data() {
             return {
                 pizza: {
+                    id: 0,
                     name: '',
                     image: 'image/blank.jpg',
                     size: 0,
@@ -64,14 +64,14 @@
                     base: 0,
                     hint: '',
                     vegan: 0,
-                    like: 0,
+                    like: false,
                     ingredients: [],
                 },
                 error: null,
             };
         },
         created() {
-            this.fetchData(this.id);
+            this.fetchData(this.id)
         },
         computed: {
             ingredientsList: function () {
@@ -85,27 +85,14 @@
         methods: {
             fetchData(id) {
                 this.empty = false;
-                this.$nextTick(function () {
-                    this.setAuthHeader();
-                    axios
-                        .get('/api/pizza/' + id)
-                        .then(response => {
-                            this.pizza = response.data.data[0];
-                        }).catch(error => {
-                            this.error = error.response.data.message || error.message;
-                        });
-                });
+                this.postRequest('/api/pizza/' + id, {}, this.postCallback, this.errorCallback);
             },
-            likeClass() {
-                return 'btn ' + (this.pizza.like ? 'btn-danger' : 'btn-outline-danger');
+            postCallback(response) {
+                this.pizza = response.data.data[0]
             },
-            like() {
-                this.pizza.like = !this.pizza.like;
+            errorCallback(text) {
+                this.error = text
             }
         }
     }
 </script>
-
-<style scoped>
-
-</style>

@@ -10,7 +10,7 @@
                     <h5 class="card-title">{{pizza.name}}</h5>
                 </div>
                 <div class="col-3 col-sm-3">
-                    <a href="#" class="btn btn-outline-danger" style="font-size: 10px">Like</a>
+                    <like-component :pizzaId="pizza.id" :pizzaLike="pizza.like"></like-component>
                 </div>
             </div>
             <p class="card-text"><strong>Ingredients:</strong> {{ ingredientsList.join(', ') }}<br>
@@ -22,7 +22,7 @@
                         <strong>{{pizza.price}} &euro;</strong>
                     </div>
                     <div class="col-auto">
-                        <a v-on:click="addToCart(pizza)" href="#" class="btn btn-primary">Add to cart</a>
+                        <a v-on:click="addToCart(pizza)" href="javascript:void(0)" class="btn btn-primary">Add to cart</a>
                     </div>
                 </div>
             </div>

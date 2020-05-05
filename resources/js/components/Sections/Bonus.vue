@@ -34,10 +34,11 @@
 </template>
 
 <script>
-    import axios from 'axios';
+    import global from "../../global";
 
     export default {
         name: "Bonus",
+        mixins: [global],
         data() {
             return {
                 loading: false,
@@ -54,16 +55,16 @@
                 this.error = this.bonuses = null;
                 this.loading = true;
                 this.empty = false;
-                axios
-                    .get('/api/bonuses')
-                    .then(response => {
-                        this.loading = false;
-                        this.bonuses = response.data.data;
-                        this.empty = !this.bonuses.length;
-                    }).catch(error => {
-                        this.loading = false;
-                        this.error = error.response.data.message || error.message;
-                    });
+                this.postRequest('/api/bonuses', {}, this.postCallback, this.errorCallback);
+            },
+            postCallback(response) {
+                this.loading = false;
+                this.bonuses = response.data.data;
+                this.empty = !this.bonuses.length;
+            },
+            errorCallback(text) {
+                this.loading = false;
+                this.error = text;
             }
         }
     }

@@ -19,6 +19,7 @@ class PizzaResource extends JsonResource
             'base' => $this->base,
             'hint' => $this->hint,
             'like' => $this->like,
+            'vegan' => $this->vegan,
             'ingredients' => $this->ingredients
         ];
     }

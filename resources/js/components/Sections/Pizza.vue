@@ -21,8 +21,23 @@
             No pizzas found
         </div>
 
+        <div class="row pt-2 pl-4">
+            <div v-if="pizzas" class="form-check">
+                <input
+                    v-on:change="showVeganPizza()"
+                    v-model="veganCheckbox"
+                    class="form-check-input"
+                    type="checkbox"
+                    value=""
+                    id="veganCheckbox"
+                >
+                <label class="form-check-label" for="veganCheckbox">
+                    Show only vegan pizza
+                </label>
+            </div>
+        </div>
         <div class="row">
-            <div v-for="pizza in pizzas" class="col-sm-6 col-md-6 col-lg-4 mt-4">
+            <div v-for="pizza in pizzas" class="col-sm-6 col-md-6 col-lg-4 mt-3">
                 <pizza-component :pizza="pizza"></pizza-component>
             </div>
         </div>
@@ -30,7 +45,6 @@
 </template>
 
 <script>
-    import axios from 'axios';
     import global from "../../global";
 
     export default {
@@ -42,6 +56,7 @@
                 empty: false,
                 pizzas: null,
                 error: null,
+                veganCheckbox: false,
             };
         },
         created() {
@@ -52,24 +67,22 @@
                 this.error = this.pizzas = null;
                 this.loading = true;
                 this.empty = false;
+                this.postRequest('/api/pizzas', {vegan: this.veganCheckbox}, this.postCallback, this.errorCallback);
+            },
+            postCallback(response) {
+                this.loading = false;
+                this.pizzas = response.data.data;
+                this.empty = !this.pizzas.length;
+            },
+            errorCallback(text) {
+                this.loading = false;
+                this.error = text;
+            },
+            showVeganPizza() {
                 this.$nextTick(function () {
-                    this.setAuthHeader();
-                    axios
-                        .get('/api/pizzas')
-                        .then(response => {
-                            this.loading = false;
-                            this.pizzas = response.data.data;
-                            this.empty = !this.pizzas.length;
-                        }).catch(error => {
-                            this.loading = false;
-                            this.error = error.response.data.message || error.message;
-                        });
-                });
+                    this.postRequest('/api/pizzas', {vegan: this.veganCheckbox}, this.postCallback, this.errorCallback);
+                })
             }
         }
     }
 </script>
-
-<style scoped>
-
-</style>
