@@ -82,7 +82,15 @@ const router = new VueRouter({
 const store = new Vuex.Store({
     state: {
         cart: {
-            items: []
+            items: [],
+            lastItem: {},
+            count: 0,
+            coupon: {
+                value: 0,
+                type: 0,
+                code: '',
+                user: 0,
+            },
         },
         user_token: ''
     }

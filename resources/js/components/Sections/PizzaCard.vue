@@ -18,11 +18,11 @@
                         <p v-if="pizza.vegan" class="card-text"><small class="text-muted">
                             Vegetarian
                         </small></p>
-                        <p class="card-text" style="font-size: 18px"><strong>Price:</strong> {{pizza.price}} &euro;</p>
+                        <p class="card-text f-18px"><strong>Price:</strong> {{pizza.price}} &euro;</p>
                     </div>
                     <div class="container pb-3">
                         <div class="row">
-                            <div class="col-6" style="font-size: 18px">
+                            <div class="col-6 f-18px">
                                 <like-component :pizzaId="pizza.id" :pizzaLike="pizza.like"></like-component>
                             </div>
                             <div class="col-6 text-right">

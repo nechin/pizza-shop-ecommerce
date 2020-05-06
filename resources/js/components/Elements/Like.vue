@@ -1,6 +1,6 @@
 <template>
     <div class="like">
-        <a v-if="isAuth" v-on:click="like()" href="javascript: void(0)" :class="likeClass">{{likeText}}</a>
+        <a v-if="isAuth" v-on:click="like()" href="javascript: void(0)" :class="likeClass" :title="likeText">&#10084;</a>
     </div>
 </template>
 
@@ -48,9 +48,3 @@
         }
     }
 </script>
-
-<style scoped>
-    .like a {
-        font-size: 10px;
-    }
-</style>

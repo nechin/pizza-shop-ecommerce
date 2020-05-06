@@ -24,9 +24,9 @@
 
         <div class="pt-3" style="width: 400px">
             <ul v-if="bonuses" class="list-group">
-                <li v-for="{ value, type, code } in bonuses" class="list-group-item">
-                    <span class="badge badge-primary badge-pill mr-2" style="font-size: 18px">{{ code }}</span>
-                    You will get <strong>{{ value }} <span v-if="type">%</span><span v-else="type">euro</span></strong> discount on order
+                <li v-for="{ value, type, code, user } in bonuses" class="list-group-item">
+                    <span class="badge badge-pill mr-2 f-18px" :class="[user ? 'badge-danger' : 'badge-primary']">{{ code }}</span>
+                    You will get <strong>{{ value }} <span v-if="type">%</span><span v-else="type">&euro;</span></strong> discount on order
                 </li>
             </ul>
         </div>
@@ -55,7 +55,7 @@
                 this.error = this.bonuses = null;
                 this.loading = true;
                 this.empty = false;
-                this.postRequest('/api/bonuses', {}, this.postCallback, this.errorCallback);
+                this.postRequest('/api/discounts', {}, this.postCallback, this.errorCallback);
             },
             postCallback(response) {
                 this.loading = false;

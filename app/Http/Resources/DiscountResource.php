@@ -12,6 +12,7 @@ class DiscountResource extends JsonResource
             'value' => $this->value,
             'type' => $this->type,
             'code' => $this->code,
+            'user' => $this->user,
         ];
     }
 }

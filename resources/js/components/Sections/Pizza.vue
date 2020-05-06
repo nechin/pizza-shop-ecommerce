@@ -31,7 +31,7 @@
                     value=""
                     id="veganCheckbox"
                 >
-                <label class="form-check-label" for="veganCheckbox">
+                <label class="form-check-label font-weight-bold" for="veganCheckbox">
                     Show only vegan pizza
                 </label>
             </div>

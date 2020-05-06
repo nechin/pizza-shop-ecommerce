@@ -11,9 +11,65 @@
             <div class="card-header font-weight-bold">
                 Selected pizzas
             </div>
-            <div v-if="isCartItems">
-                <ul v-for="(pizza, key) in pizzas" class="list-group list-group-flush">
-                    <li v-if="pizza" class="list-group-item">{{pizza.name}} - {{pizza.count}}</li>
+            <div v-if="isCartNotEmpty">
+                <ul v-for="(pizza, key) in $store.state.cart.items" class="list-group list-group-flush">
+                    <li v-if="pizza" class="list-group-item">
+                        <div class="row">
+                            <div class="col-4">
+                                <router-link :to="{ name: 'PizzaCard', params: { id: pizza.id } }">
+                                    <span class="f-18px">{{pizza.name}}</span>
+                                </router-link> ({{pizza.price}} &euro;)
+                            </div>
+                            <div class="col-4 col-sm-3">
+                                <select v-model="pizza.base" class="form-control" title="Base">
+                                    <option value="0">Tomato base</option>
+                                    <option value="1">Cream base</option>
+                                </select>
+                            </div>
+                            <div class="col-4 col-sm-5 text-right">
+                                <a v-on:click="decreasePizza(key)" href="javascript:void(0)">
+                                    <span class="font-weight-bold" style="font-size: 20px">-</span>
+                                </a>
+                                <span style="font-size: 16px">{{pizza.count}}</span>
+                                <a v-on:click="increasePizza(key)" href="javascript:void(0)">
+                                    <span class="font-weight-bold" style="font-size: 20px">+</span>
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="input-group mb-3" style="width: 150px">
+                                    <input
+                                        v-model="$store.state.cart.coupon.code"
+                                        type="text"
+                                        class="form-control"
+                                        :class="[errorCoupon ? 'is-invalid' : '', couponApplied ? 'is-valid' : '']"
+                                        placeholder="Coupon"
+                                        aria-describedby="button-coupon"
+                                    >
+                                    <div class="input-group-append">
+                                        <button v-on:click="applyCoupon()" class="btn btn-outline-secondary"
+                                                type="button" id="button-coupon">OK
+                                        </button>
+                                    </div>
+                                    <div v-if="errorCoupon" class="invalid-coupon">
+                                        Invalid coupon
+                                    </div>
+                                    <div v-if="couponApplied" class="valid-feedback">
+                                        Coupon applied
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4 text-right">
+                                <span v-if="discountValue">(Discount: {{ discountValue }} &euro;)</span>
+                                <strong>Total: </strong><span class="font-weight-bold f-18px">{{total}} &euro;</span>
+                            </div>
+                        </div>
+                    </li>
                 </ul>
             </div>
             <div v-else>
@@ -23,7 +79,7 @@
             </div>
         </div>
 
-        <div v-if="isCartItems" class="card mt-3 pl-4 pr-4 pt-4 pb-1">
+        <div v-if="isCartNotEmpty" class="card mt-3 pl-4 pr-4 pt-4 pb-1">
             <form>
                 <div v-if="!isAuth">
                     <div class="form-group row">
@@ -50,13 +106,15 @@
                         <legend class="col-form-label col-sm-2 pt-0">Delivery type</legend>
                         <div class="col-sm-10">
                             <div class="form-check">
-                                <input v-model="deliveryType" class="form-check-input" type="radio" name="deliveryRadios" id="deliveryRadio1" value="0" checked>
+                                <input v-model="deliveryType" class="form-check-input" type="radio"
+                                       name="deliveryRadios" id="deliveryRadio1" value="0" checked>
                                 <label class="form-check-label" for="deliveryRadio1">
                                     Delivery
                                 </label>
                             </div>
                             <div class="form-check">
-                                <input v-model="deliveryType" class="form-check-input" type="radio" name="deliveryRadios" id="deliveryRadio2" value="1">
+                                <input v-model="deliveryType" class="form-check-input" type="radio"
+                                       name="deliveryRadios" id="deliveryRadio2" value="1">
                                 <label class="form-check-label" for="deliveryRadio2">
                                     Pickup
                                 </label>
@@ -69,7 +127,8 @@
                     <div class="col-sm-10">
                         <div class="form-check">
                             <input v-model="byTime" class="form-check-input" type="checkbox">
-                            <input v-if="byTime" v-model="deliveryTime" type="text" class="form-control" style="width: 100px" placeholder="00:00">
+                            <input v-if="byTime" v-model="deliveryTime" type="text" class="form-control"
+                                   style="width: 100px" placeholder="00:00">
                         </div>
                     </div>
                 </div>
@@ -95,43 +154,132 @@
         mixins: [global],
         data() {
             return {
-                pizzas: [],
                 firstName: '',
                 lastName: '',
                 email: '',
                 note: '',
                 byTime: false,
                 deliveryTime: '',
-                deliveryType: 0
+                deliveryType: 0,
+				total: 0,
+                discountValue: false,
+                errorCoupon: false,
             }
         },
         created() {
             this.setCart()
         },
         computed: {
-            isCartItems: function () {
-                return this.$store.state.cart.items.length !== 0;
+            isCartNotEmpty: function () {
+                return this.$store.state.cart.count !== 0;
+            },
+            couponApplied: function () {
+                return this.$store.state.cart.coupon.value !== 0;
             }
         },
         methods: {
             setCart() {
-                if (this.isCartItems) {
-                    const items = this.$store.state.cart.items;
-                    for (let item in items) {
-                        if (!items.hasOwnProperty(item)) {
-                            continue;
-                        }
-                        if (typeof this.pizzas[items[item].id] === 'undefined') {
-                            let pizzaItem = items[item];
-                            pizzaItem.count = 1;
-                            this.pizzas[items[item].id] = pizzaItem;
-                        } else {
-                            this.pizzas[items[item].id].count++;
-                        }
-                    }
+                if (this.isCartNotEmpty) {
+                    this.calculateCartTotal();
                 }
             },
+            getCartItems() {
+                return this.$store.state.cart.items;
+            },
+			increasePizza(id) {
+                this.$store.state.cart.items[id].count++;
+                this.$store.state.cart.count++;
+                this.calculateCartTotal();
+			},
+			decreasePizza(id) {
+                this.$store.state.cart.items[id].count--;
+				if (0 === this.$store.state.cart.items[id].count) {
+                    this.$store.state.cart.items.splice(id, 1);
+				}
+                this.$store.state.cart.count--;
+                this.calculateCartTotal();
+			},
+			calculateCartTotal() {
+                const items = this.getCartItems();
+                this.total = 0;
+                for (let item in items) {
+                    if (!items.hasOwnProperty(item)) {
+                        continue;
+                    }
+                    this.total += items[item].price * items[item].count;
+                }
+
+                if (0 !== this.$store.state.cart.coupon.value) {
+                    let coupon = this.$store.state.cart.coupon;
+                    this.discountValue = coupon.type ? this.total * coupon.value / 100 : coupon.value;
+                    this.total -= this.discountValue;
+                    if (this.total < 0) {
+                        this.total = 0;
+                    }
+                }
+			},
+            clearCoupon() {
+                this.discountValue = false;
+                this.$store.state.cart.coupon = {
+                    value: 0,
+                    type: 0,
+                    code: '',
+                    user: 0,
+                };
+            },
+            applyCoupon() {
+                this.errorCoupon = false;
+                if ('' !== this.$store.state.cart.coupon.code) {
+                    this.postRequest(
+                        '/api/apply-discount',
+                        {
+                            code: this.$store.state.cart.coupon.code
+                        },
+                        this.discountCallback,
+                        this.errorDiscountCallback
+                    );
+                } else {
+                    this.clearCoupon();
+                    this.calculateCartTotal();
+                }
+            },
+            discountCallback(response) {
+                this.$store.state.cart.coupon = response.data.data[0];
+                this.calculateCartTotal();
+            },
+            errorDiscountCallback(text) {
+                this.clearCoupon();
+                this.errorCoupon = true;
+                this.calculateCartTotal();
+            },
             createOrder() {
+                if (this.isCartNotEmpty) {
+                    this.postRequest(
+                        '/api/create-order',
+                        {
+                            items: this.getCartItems(),
+                            coupon: this.$store.state.cart.coupon
+                        },
+                        this.orderCallback,
+                        this.errorOrderCallback
+                    );
+                }
+            },
+            orderCallback(response) {
+                this.$store.state.cart = {
+                    items: [],
+                    lastItem: {},
+                    count: 0,
+                    coupon: {
+                        value: 0,
+                        type: 0,
+                        code: '',
+                        user: 0,
+                    },
+                };
+                this.total = 0;
+            },
+            errorOrderCallback(text) {
 
             }
         }

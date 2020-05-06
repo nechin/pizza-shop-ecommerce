@@ -18,11 +18,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('bonuses', 'DiscountController@getAvailable');
-
 Route::middleware('token')->group(function () {
+    Route::post('apply-discount', 'DiscountController@apply');
+    Route::post('discounts', 'DiscountController@getAvailable');
     Route::post('pizzas', 'PizzaController@getPizzas');
     Route::post('my-pizzas', 'PizzaController@getMyPizzas');
     Route::post('pizza/{id}', 'PizzaController@getOne');
     Route::post('like/{id}', 'LikeController@like');
+    Route::post('create-order', 'OrderController@create');
 });

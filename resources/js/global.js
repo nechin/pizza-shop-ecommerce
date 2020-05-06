@@ -4,17 +4,19 @@ const global = {
     computed: {
         isAuth: function () {
             return this.$store.state.user_token !== false;
-        },
-        isCartItems() {
-            return this.$store.state.cart.items.length !== 0;
-        },
-        cartItems() {
-            return this.$store.state.cart.items;
         }
     },
     methods: {
         addToCart(item) {
-            this.$store.state.cart.items.push(item);
+            if (typeof this.$store.state.cart.items[item.id] === 'undefined') {
+                let pizzaItem = item;
+                pizzaItem.count = 1;
+                this.$store.state.cart.items[item.id] = pizzaItem;
+            } else {
+                this.$store.state.cart.items[item.id].count++;
+            }
+            this.$store.state.cart.lastItem = item;
+            this.$store.state.cart.count++;
         },
         setAuthHeader() {
             if (this.$store.state.user_token) {

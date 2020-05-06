@@ -6,10 +6,10 @@
         <div class="card-body">
             <h5 v-if="!isAuth" class="card-title">{{pizza.name}}</h5>
             <div v-if="isAuth" class="row">
-                <div class="col-9 col-sm-9">
+                <div class="col-9">
                     <h5 class="card-title">{{pizza.name}}</h5>
                 </div>
-                <div class="col-3 col-sm-3">
+                <div class="col-3">
                     <like-component :pizzaId="pizza.id" :pizzaLike="pizza.like"></like-component>
                 </div>
             </div>
@@ -18,7 +18,7 @@
             <strong>Weight:</strong> {{pizza.weight}} g</p>
             <div class="container">
                 <div class="row justify-content-md-right">
-                    <div class="col-6 col-sm-8 col-md-6" style="font-size: 18px">
+                    <div class="col-6 col-sm-8 col-md-6 f-18px">
                         <strong>{{pizza.price}} &euro;</strong>
                     </div>
                     <div class="col-auto">

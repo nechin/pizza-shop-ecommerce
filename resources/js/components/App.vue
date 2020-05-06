@@ -25,8 +25,11 @@
                 </nav>
             </div>
             <div class="col-4 text-right">
+                <transition name="fade">
+                    <span v-if="added" class="added-success" v-html="lastItemName"></span>
+                </transition>
                 <router-link :to="{ name: 'cart' }" class="btn btn-success font-weight-bold">
-                    Cart ({{cartItems}})
+                    Cart ({{cartCount}})
                 </router-link>
             </div>
         </div>
@@ -40,9 +43,34 @@
 <script>
     export default {
         name: "App",
+        data() {
+            return {
+                added: false,
+                timeout: null
+            }
+        },
         computed: {
-            cartItems: function () {
-                return this.$store.state.cart.items.length || 0;
+            cartCount: function () {
+                return this.$store.state.cart.count;
+            },
+            lastItem: function () {
+                return this.$store.state.cart.lastItem;
+            },
+            lastItemName: function () {
+                return 'Added:<br><strong>' + this.lastItem.name + '</strong>';
+            }
+        },
+        watch: {
+            lastItem (newValue, oldValue) {
+                this.added = true;
+                const self = this;
+
+                if (this.timeout) {
+                    clearTimeout(this.timeout);
+                }
+                this.timeout = setTimeout(function() {
+                    self.added = false;
+                }, 3000);
             }
         }
     }
@@ -54,5 +82,27 @@
     }
     .navbar-nav a.active {
         font-weight: bold;
+    }
+    .added-success {
+        position: fixed;
+        background-color: #a4dfb5;
+        width: 200px;
+        height: 60px;
+        padding: 5px;
+        text-align: center;
+        border-radius: 3px;
+        border: 1px solid #0ab00a;
+        opacity: 0.9;
+        color: black;
+        margin: 1% auto; /* Will not center vertically and won't work in IE6/7. */
+        left: 0;
+        right: 0;
+        z-index: 1;
+    }
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity .3s;
+    }
+    .fade-enter, .fade-leave-to /* .fade-leave-active до версии 2.1.8 */ {
+        opacity: 0;
     }
 </style>

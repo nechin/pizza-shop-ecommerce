@@ -26,5 +26,13 @@ class DiscountSeeder extends Seeder
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now()
         ]);
+        DB::table('discount')->insert([
+            'value' => 20,
+            'type' => 0, // -5
+            'user' => 1, // for registered user
+            'code' => 'TADA20',
+            'created_at' => Carbon::now(),
+            'updated_at' => Carbon::now()
+        ]);
     }
 }
