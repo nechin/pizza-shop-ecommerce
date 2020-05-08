@@ -15,7 +15,7 @@ class AddNewFields extends Migration
     {
         Schema::table('order', function(Blueprint $table) {
             $table->dateTime('to_time')->after('address');
-            $table->text('note')->after('to_time');
+            $table->text('note')->after('to_time')->nullable();
             $table->unsignedTinyInteger('delivery_type')->after('note')->default(0);
             $table->string('currency')->after('delivery_type')->default('EUR');
         });

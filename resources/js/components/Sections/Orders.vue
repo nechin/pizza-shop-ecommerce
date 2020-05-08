@@ -49,6 +49,11 @@
                     </li>
                 </ul>
             </div>
+            <div v-else>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">No orders</li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>

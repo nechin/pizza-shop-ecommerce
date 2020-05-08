@@ -101,6 +101,9 @@ class OrderController extends Controller
         }
 
         $orders = Order::where('user_id', $userId)->get();
-        return OrderResource::collection($orders);
+        if ($orders->count()) {
+            return OrderResource::collection($orders);
+        }
+        return response()->json(['data' => null]);
     }
 }

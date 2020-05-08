@@ -3,8 +3,14 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title text-primary">Promotions and bonuses</h5>
-                <p class="card-text">We love our customers so much that we are often ready to make pleasant discounts
-                    and promotions for them. Visit this section more often and find what suits you best.</p>
+                <p class="card-text">
+                    We love our customers so much that we are often ready to make pleasant discounts
+                    and promotions for them.<br>
+                    You can use these coupons when ordering. Just enter the code in the appropriate
+                    field and get a discount.<br>
+                    Coupons with a red background are personalized coupons. They are visible only when
+                    you log in with your account.
+                </p>
             </div>
         </div>
 

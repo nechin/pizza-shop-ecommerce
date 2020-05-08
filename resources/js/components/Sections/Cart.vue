@@ -3,7 +3,14 @@
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title text-success">Cart</h5>
-                <p class="card-text">Below is what you have selected. Indicate the delivery address and you will have delicious pizza.</p>
+                <p class="card-text">
+                    Below is what you have selected. Indicate the delivery address and you will have
+                    delicious pizza.<br>
+                    Delivery cost depends on the total cost of the order without a discount. If the
+                    order is more than 15 &euro;, then delivery is free. Otherwise 2 &euro;.<br>
+                    If you want to place an order by time, simply indicate the hours and minutes.
+                    Delivery takes about an hour. Orders with elapsed time are carried over to the next day.
+                </p>
             </div>
         </div>
 
@@ -172,7 +179,7 @@
                         </div>
                     </div>
                 </fieldset>
-                <div v-if="deliveryByTime" class="form-group row">
+                <div class="form-group row">
                     <div class="col-sm-2">Order by time</div>
                     <div class="col-sm-10">
                         <div class="form-check">
@@ -222,7 +229,6 @@
                 errorEmail: false,
                 note: '',
                 byTime: false,
-                deliveryByTime: true,
                 deliveryTime: '',
                 deliveryType: '0',
                 deliveryCost: 0,
@@ -272,13 +278,18 @@
             },
 			calculateCartTotal() {
                 const items = this.getCartItems();
+                let pizzaTotal = 0;
+
                 this.total = 0;
+
                 for (let item in items) {
                     if (!items.hasOwnProperty(item)) {
                         continue;
                     }
                     this.total += items[item].price * items[item].count;
                 }
+
+                pizzaTotal = this.total;
 
                 if (0 !== this.$store.state.cart.coupon.value) {
                     let coupon = this.$store.state.cart.coupon;
@@ -291,9 +302,12 @@
                 }
 
                 if ('0' === this.deliveryType) {
-                    this.deliveryCost = this.total / 20;
-                    this.deliveryCost = this.moneyFormat(this.deliveryCost);
-                    this.total += this.deliveryCost;
+                    if (pizzaTotal > 15) {
+                        this.deliveryCost = 0;
+                    } else {
+                        this.deliveryCost = 2;
+                        this.total += this.deliveryCost;
+                    }
                 }
 
                 this.total = this.moneyFormat(this.total);
@@ -421,9 +435,6 @@
             deliveryType() {
                 if ('1' === this.deliveryType) {
                     this.deliveryCost = 0;
-                    this.deliveryByTime = false;
-                } else {
-                    this.deliveryByTime = true;
                 }
                 this.calculateCartTotal();
             }

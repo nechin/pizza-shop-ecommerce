@@ -101,7 +101,6 @@ const app = new Vue({
     components: { App },
     created() {
         this.setToken();
-        this.addRoute();
     },
     methods: {
         setToken() {

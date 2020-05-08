@@ -28,7 +28,7 @@ class DiscountSeeder extends Seeder
         ]);
         DB::table('discount')->insert([
             'value' => 20,
-            'type' => 0, // -5
+            'type' => 1, // -%
             'user' => 1, // for registered user
             'code' => 'TADA20',
             'created_at' => Carbon::now(),

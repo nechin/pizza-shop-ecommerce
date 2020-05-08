@@ -18,15 +18,17 @@
                     </like-component>
                 </div>
             </div>
-            <p class="card-text"><strong>Ingredients:</strong> {{ ingredientsList.join(', ') }}<br>
-            <strong>Size:</strong> {{pizza.size}} cm<br>
-            <strong>Weight:</strong> {{pizza.weight}} g</p>
+            <p class="card-text" style="height: 130px">
+                <strong>Ingredients:</strong> {{ ingredientsList.join(', ') }}<br>
+                <strong>Size:</strong> {{pizza.size}} cm<br>
+                <strong>Weight:</strong> {{pizza.weight}} g
+            </p>
             <div class="container">
                 <div class="row justify-content-md-right">
-                    <div class="col-6 col-sm-8 col-md-6 f-18px">
-                        <strong>{{pizza.price}} &euro;</strong>
+                    <div class="col-4 f-18px">
+                        <strong style="white-space: nowrap;">{{pizza.price}} &euro;</strong>
                     </div>
-                    <div class="col-auto">
+                    <div class="col-8 text-right">
                         <a v-on:click="addToCart(pizza)" href="javascript:void(0)" class="btn btn-primary">Add to cart</a>
                     </div>
                 </div>

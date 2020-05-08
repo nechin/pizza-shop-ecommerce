@@ -8,8 +8,7 @@
                     <router-link :to="{ name: 'pizza' }" class="text-primary">
                         section
                     </router-link>
-                    of our delicious pizzas and choose.<br>
-                    However, if you are our frequent visitor, then below is a list of those pizzas that you like.
+                    of our delicious pizzas and choose.
                 </p>
             </div>
         </div>
@@ -28,7 +27,7 @@
             <div class="card-body">
                 <h5 class="card-title font-weight-bold">Your favorite pizza</h5>
                 <div class="row">
-                    <div v-for="pizza_like in pizzas.like" class="col-sm-4 mt-4">
+                    <div v-for="pizza_like in pizzas.like" class="col-sm-6 col-md-6 col-lg-4 mt-4">
                         <pizza-component :pizza="pizza_like"></pizza-component>
                     </div>
                 </div>
@@ -39,7 +38,7 @@
             <div class="card-body">
                 <h5 class="card-title font-weight-bold">Our best pizza</h5>
                 <div class="row">
-                    <div v-for="pizza_best in pizzas.best" class="col-sm-4 mt-4">
+                    <div v-for="pizza_best in pizzas.best" class="col-sm-6 col-md-6 col-lg-4 mt-4">
                         <pizza-component :pizza="pizza_best"></pizza-component>
                     </div>
                 </div>
@@ -50,7 +49,7 @@
             <div class="card-body">
                 <h5 class="card-title font-weight-bold">Best vegan pizza</h5>
                 <div class="row">
-                    <div v-for="pizza_vegan in pizzas.vegan" class="col-sm-4 mt-4">
+                    <div v-for="pizza_vegan in pizzas.vegan" class="col-sm-6 col-md-6 col-lg-4 mt-4">
                         <pizza-component :pizza="pizza_vegan"></pizza-component>
                     </div>
                 </div>
@@ -61,7 +60,7 @@
             <div class="card-body">
                 <h5 class="card-title font-weight-bold">Best tomato pizza</h5>
                 <div class="row">
-                    <div v-for="pizza_tomato in pizzas.tomato" class="col-sm-4 mt-4">
+                    <div v-for="pizza_tomato in pizzas.tomato" class="col-sm-6 col-md-6 col-lg-4 mt-4">
                         <pizza-component :pizza="pizza_tomato"></pizza-component>
                     </div>
                 </div>
@@ -72,7 +71,7 @@
             <div class="card-body">
                 <h5 class="card-title font-weight-bold">Best cream pizza</h5>
                 <div class="row">
-                    <div v-for="pizza_cream in pizzas.cream" class="col-sm-4 mt-4">
+                    <div v-for="pizza_cream in pizzas.cream" class="col-sm-6 col-md-6 col-lg-4 mt-4">
                         <pizza-component :pizza="pizza_cream"></pizza-component>
                     </div>
                 </div>
