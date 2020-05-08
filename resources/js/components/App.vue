@@ -14,6 +14,9 @@
                             <router-link :to="{ name: 'pizza' }" active-class="active" class="nav-item nav-link text-dark pr-3">
                                 Pizza
                             </router-link>
+                            <router-link v-if="isAuth" :to="{ name: 'orders' }" active-class="active" class="nav-item nav-link text-dark">
+                                My orders
+                            </router-link>
                             <router-link :to="{ name: 'bonus' }" active-class="active" class="nav-item nav-link text-dark pr-3">
                                 Bonus
                             </router-link>
@@ -41,12 +44,27 @@
 </template>
 
 <script>
+    import global from "../global";
+    import Orders from "./Sections/Orders";
+
     export default {
         name: "App",
+        mixins: [global],
         data() {
             return {
                 added: false,
                 timeout: null
+            }
+        },
+        created() {
+            if (this.isAuth) {
+                this.$router.addRoutes(
+                    [{
+                        path: '/orders',
+                        name: 'orders',
+                        component: Orders,
+                    }]
+                );
             }
         },
         computed: {
@@ -62,15 +80,17 @@
         },
         watch: {
             lastItem (newValue, oldValue) {
-                this.added = true;
-                const self = this;
+                if (!(Object.keys(newValue).length === 0 && newValue.constructor === Object)) {
+                    this.added = true;
+                    const self = this;
 
-                if (this.timeout) {
-                    clearTimeout(this.timeout);
+                    if (this.timeout) {
+                        clearTimeout(this.timeout);
+                    }
+                    this.timeout = setTimeout(function () {
+                        self.added = false;
+                    }, 3000);
                 }
-                this.timeout = setTimeout(function() {
-                    self.added = false;
-                }, 3000);
             }
         }
     }

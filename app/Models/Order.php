@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
+    const STATUS_NEW = 0;
+    const STATUS_PROGRESS = 1;
+    const STATUS_COMPLETE = 2;
+
     use SoftDeletes;
 
     public $timestamps = true;

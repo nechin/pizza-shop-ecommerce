@@ -7,11 +7,15 @@
             </div>
         </div>
 
+        <div v-if="confirm" class="alert alert-info mt-3" role="alert">
+            Order created. Thank you!
+        </div>
+
         <div class="card mt-4">
             <div class="card-header font-weight-bold">
                 Selected pizzas
             </div>
-            <div v-if="isCartNotEmpty">
+            <div v-if="!isCartEmpty">
                 <ul v-for="(pizza, key) in $store.state.cart.items" class="list-group list-group-flush">
                     <li v-if="pizza" class="list-group-item">
                         <div class="row">
@@ -40,6 +44,12 @@
                 </ul>
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item">
+                        <div v-if="'0' === deliveryType" class="row">
+                            <div class="col-8"></div>
+                            <div class="col-4 text-right">
+                                Delivery: {{deliveryCost}} &euro;
+                            </div>
+                        </div>
                         <div class="row">
                             <div class="col-8">
                                 <div class="input-group mb-3" style="width: 150px">
@@ -56,7 +66,7 @@
                                                 type="button" id="button-coupon">OK
                                         </button>
                                     </div>
-                                    <div v-if="errorCoupon" class="invalid-coupon">
+                                    <div v-if="errorCoupon" class="invalid-feedback">
                                         Invalid coupon
                                     </div>
                                     <div v-if="couponApplied" class="valid-feedback">
@@ -79,7 +89,11 @@
             </div>
         </div>
 
-        <div v-if="isCartNotEmpty" class="card mt-3 pl-4 pr-4 pt-4 pb-1">
+        <div v-if="error" class="alert alert-danger mt-3" role="alert">
+            {{ error }}
+        </div>
+
+        <div v-if="!isCartEmpty" class="card mt-3 pl-4 pr-4 pt-4 pb-1">
             <form>
                 <div v-if="!isAuth">
                     <div class="form-group row">
@@ -97,8 +111,44 @@
                     <div class="form-group row">
                         <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
                         <div class="col-sm-10">
-                            <input v-model="email" type="email" class="form-control" id="inputEmail">
+                            <input
+                                v-model="email"
+                                v-on:keyup="checkEmail"
+                                type="email"
+                                class="form-control"
+                                id="inputEmail"
+                                :class="[errorEmail ? 'is-invalid' : '']"
+                                required
+                            >
                         </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputAddress" class="col-sm-2 col-form-label">Address</label>
+                    <div class="col-sm-10">
+                        <input
+                            v-model="address"
+                            v-on:keyup="checkAddress"
+                            type="text"
+                            class="form-control"
+                            id="inputAddress"
+                            :class="[errorAddress ? 'is-invalid' : '']"
+                            required
+                        >
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label for="inputPhone" class="col-sm-2 col-form-label">Phone</label>
+                    <div class="col-sm-10">
+                        <input
+                            v-model="phone"
+                            v-on:keyup="checkPhone"
+                            type="text"
+                            class="form-control"
+                            id="inputPhone"
+                            :class="[errorPhone ? 'is-invalid' : '']"
+                            required
+                        >
                     </div>
                 </div>
                 <fieldset class="form-group">
@@ -122,13 +172,21 @@
                         </div>
                     </div>
                 </fieldset>
-                <div class="form-group row">
+                <div v-if="deliveryByTime" class="form-group row">
                     <div class="col-sm-2">Order by time</div>
                     <div class="col-sm-10">
                         <div class="form-check">
                             <input v-model="byTime" class="form-check-input" type="checkbox">
-                            <input v-if="byTime" v-model="deliveryTime" type="text" class="form-control"
-                                   style="width: 100px" placeholder="00:00">
+                            <input
+                                v-if="byTime"
+                                v-model="deliveryTime"
+                                type="time"
+                                class="form-control"
+                                min="09:00"
+                                max="21:00"
+                                style="width: 100px"
+                                placeholder="00:00"
+                            >
                         </div>
                     </div>
                 </div>
@@ -156,22 +214,31 @@
             return {
                 firstName: '',
                 lastName: '',
+                phone: '',
                 email: '',
+                address: '',
+                errorPhone: false,
+                errorAddress: false,
+                errorEmail: false,
                 note: '',
                 byTime: false,
+                deliveryByTime: true,
                 deliveryTime: '',
-                deliveryType: 0,
+                deliveryType: '0',
+                deliveryCost: 0,
 				total: 0,
                 discountValue: false,
                 errorCoupon: false,
+                error: false,
+                confirm: false,
             }
         },
         created() {
             this.setCart()
         },
         computed: {
-            isCartNotEmpty: function () {
-                return this.$store.state.cart.count !== 0;
+            isCartEmpty: function () {
+                return this.$store.state.cart.count === 0;
             },
             couponApplied: function () {
                 return this.$store.state.cart.coupon.value !== 0;
@@ -179,7 +246,7 @@
         },
         methods: {
             setCart() {
-                if (this.isCartNotEmpty) {
+                if (!this.isCartEmpty) {
                     this.calculateCartTotal();
                 }
             },
@@ -199,6 +266,10 @@
                 this.$store.state.cart.count--;
                 this.calculateCartTotal();
 			},
+            moneyFormat(value) {
+                value = value * 1;
+                return value.toFixed(2) * 1;
+            },
 			calculateCartTotal() {
                 const items = this.getCartItems();
                 this.total = 0;
@@ -212,11 +283,20 @@
                 if (0 !== this.$store.state.cart.coupon.value) {
                     let coupon = this.$store.state.cart.coupon;
                     this.discountValue = coupon.type ? this.total * coupon.value / 100 : coupon.value;
+                    this.discountValue = this.moneyFormat(this.discountValue);
                     this.total -= this.discountValue;
                     if (this.total < 0) {
                         this.total = 0;
                     }
                 }
+
+                if ('0' === this.deliveryType) {
+                    this.deliveryCost = this.total / 20;
+                    this.deliveryCost = this.moneyFormat(this.deliveryCost);
+                    this.total += this.deliveryCost;
+                }
+
+                this.total = this.moneyFormat(this.total);
 			},
             clearCoupon() {
                 this.discountValue = false;
@@ -252,18 +332,48 @@
                 this.errorCoupon = true;
                 this.calculateCartTotal();
             },
-            createOrder() {
-                if (this.isCartNotEmpty) {
-                    this.postRequest(
-                        '/api/create-order',
-                        {
-                            items: this.getCartItems(),
-                            coupon: this.$store.state.cart.coupon
-                        },
-                        this.orderCallback,
-                        this.errorOrderCallback
-                    );
+            gerOrderData() {
+                return {
+                    items: this.getCartItems(),
+                    firstName: this.firstName,
+                    lastName: this.lastName,
+                    phone: this.phone,
+                    email: this.email,
+                    address: this.address,
+                    note: this.note,
+                    byTime: this.byTime,
+                    deliveryTime: this.deliveryTime,
+                    deliveryType: this.deliveryType,
+                    discountValue: this.discountValue,
+                    total: this.total,
                 }
+            },
+            createOrder() {
+                if (this.isCartEmpty) {
+                    return false;
+                }
+
+                this.checkPhone();
+                this.checkAddress();
+                this.checkEmail();
+
+                if (!this.isValidAddress()) {
+                    return false;
+                }
+
+                if (!this.isValidEmail()) {
+                    return false;
+                }
+
+                this.error = false;
+                this.postRequest(
+                    '/api/create-order',
+                    {
+                        data: this.gerOrderData()
+                    },
+                    this.orderCallback,
+                    this.errorOrderCallback
+                );
             },
             orderCallback(response) {
                 this.$store.state.cart = {
@@ -278,9 +388,44 @@
                     },
                 };
                 this.total = 0;
+                this.confirm = true;
             },
             errorOrderCallback(text) {
-
+                this.error = text;
+            },
+            checkAddress() {
+                this.errorAddress = ('' === this.address);
+            },
+            isValidAddress() {
+                return !this.errorAddress;
+            },
+            checkPhone() {
+                this.errorPhone = ('' === this.phone);
+            },
+            isValidPhone() {
+                return !this.errorPhone;
+            },
+            checkEmail() {
+                if (this.isAuth) {
+                    this.errorEmail = false;
+                } else {
+                    let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+                    this.errorEmail = ('' === this.email || !re.test(this.email));
+                }
+            },
+            isValidEmail() {
+                return !this.errorEmail;
+            }
+        },
+        watch: {
+            deliveryType() {
+                if ('1' === this.deliveryType) {
+                    this.deliveryCost = 0;
+                    this.deliveryByTime = false;
+                } else {
+                    this.deliveryByTime = true;
+                }
+                this.calculateCartTotal();
             }
         }
     }

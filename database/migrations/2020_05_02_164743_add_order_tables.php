@@ -18,8 +18,9 @@ class AddOrderTables extends Migration
             $table->unsignedFloat('total');
             $table->unsignedFloat('discount_total');
             $table->unsignedTinyInteger('state');
+            $table->string('phone');
             $table->string('address');
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable()->default(null);
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('user_id')->references('id')->on('users');

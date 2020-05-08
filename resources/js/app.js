@@ -92,7 +92,7 @@ const store = new Vuex.Store({
                 user: 0,
             },
         },
-        user_token: ''
+        user_token: '',
     }
 });
 
@@ -100,7 +100,8 @@ const app = new Vue({
     el: '#app',
     components: { App },
     created() {
-        this.setToken()
+        this.setToken();
+        this.addRoute();
     },
     methods: {
         setToken() {

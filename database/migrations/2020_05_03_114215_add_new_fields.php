@@ -21,14 +21,14 @@ class AddNewFields extends Migration
         });
 
         Schema::table('pizza', function(Blueprint $table) {
-            $table->unsignedTinyInteger('base')->after('price')->default(0); // tomato or cream
             $table->string('hint')->after('base');
             $table->boolean('vegan')->after('hint');
             $table->unsignedInteger('viewed')->after('vegan')->default(0);
         });
 
         Schema::table('order_pizzas', function(Blueprint $table) {
-            $table->unsignedSmallInteger('count')->after('pizza_id');
+            $table->unsignedTinyInteger('base')->after('pizza_id')->default(0); // tomato or cream
+            $table->unsignedSmallInteger('count')->after('base');
         });
     }
 
@@ -46,12 +46,12 @@ class AddNewFields extends Migration
             $table->dropColumn('currency');
         });
         Schema::table('pizza', function(Blueprint $table) {
-            $table->dropColumn('base');
             $table->dropColumn('hint');
             $table->dropColumn('vegan');
             $table->dropColumn('viewed');
         });
         Schema::table('order_pizzas', function(Blueprint $table) {
+            $table->dropColumn('base');
             $table->dropColumn('count');
         });
     }

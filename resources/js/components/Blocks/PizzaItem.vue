@@ -10,7 +10,12 @@
                     <h5 class="card-title">{{pizza.name}}</h5>
                 </div>
                 <div class="col-3">
-                    <like-component :pizzaId="pizza.id" :pizzaLike="pizza.like"></like-component>
+                    <like-component
+                        v-if="$route.name !== 'home'"
+                        :pizzaId="pizza.id"
+                        :pizzaLike="pizza.like"
+                    >
+                    </like-component>
                 </div>
             </div>
             <p class="card-text"><strong>Ingredients:</strong> {{ ingredientsList.join(', ') }}<br>
