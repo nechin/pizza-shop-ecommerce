@@ -17,3 +17,6 @@ Shop for selling delicious pizza
 4. Create and set connection to database
 4. Run command: **php artisan migrate**
 5. Run command: **php artisan db:seed**
+
+# View
+http://pizza.vitkalov.ru/
